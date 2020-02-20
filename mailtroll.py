@@ -26,7 +26,11 @@ if __name__ == '__main__':
     s.starttls()
 
     # login authentication
-    s.login(str(sys.argv[1]), password)
+    try:
+        s.login(str(sys.argv[1]), password)
+    except:
+        print("Wrong password. Exiting now\nexit(-1)")
+        exit(-1)
 
     # create list for single or multiple recipient accounts
     recipient_list = sys.argv[2].split(" ")
