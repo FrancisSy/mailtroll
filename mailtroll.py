@@ -10,8 +10,8 @@ from getpass import getpass
 
 if __name__ == '__main__':
     # DEBUGGING
-    for i, j in enumerate(sys.argv):
-        print("sys.argv[%d]" % i, j)
+    # for i, j in enumerate(sys.argv):
+        # print("sys.argv[%d]" % i, j)
 
     # check to see that there are argument flags
     if len(sys.argv) != 4:
@@ -31,14 +31,15 @@ if __name__ == '__main__':
     # create list for single or multiple recipient accounts
     recipient_list = sys.argv[2].split(" ")
 
+    # message to send
     message = str(input("Input message: "))
 
     # loop send the mail to all recipients
     send_message = message # initial
-    for i in range(int(sys.argv[3])):
-        for j in range(len(recipient_list)):
-            send_message += str(i+1)
-            s.sendmail(sys.argv[1], recipient_list[j], send_message)
+    for i in range(len(recipient_list)):
+        for j in range(int(sys.argv[3])):
+            send_message += str(j+1)
+            s.sendmail(sys.argv[1], recipient_list[i], send_message)
             send_message = message # reset
 
     s.quit() # quit
