@@ -45,7 +45,9 @@ if __name__ == '__main__':
     recipient_list = sys.argv[2].split(" ")
 
     # message to send
-    message = str(input("Input message: "))
+    msg_head = str(input("Message Header: "))
+    msg_text = str(input("Input message: "))
+    message = 'Subject: {}\n\n{}'.format(msg_head, msg_text)
 
     # loop send the mail to all recipients
     send_message = message # initial
