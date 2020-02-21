@@ -18,19 +18,28 @@ if __name__ == '__main__':
         print("Error: no or missing flags\nexit(-1)")
         exit(-1)
 
-    # obtain password: hide keylog
-    password = str(getpass("Please enter account password: "))
-
+    
     # create a SMTP session and start tls for security
     s = smtplib.SMTP('smtp.gmail.com', 587)
     s.starttls()
 
     # login authentication
-    try:
-        s.login(str(sys.argv[1]), password)
-    except:
-        print("Wrong password. Exiting now\nexit(-1)")
-        exit(-1)
+    num_tries = 3
+    while True:
+        if num_tries == 0:
+            print("Wrong Password. Exiting now\nexit(-1)")
+            exit(-1)
+
+        # obtain password: hide keylog
+        password = str(getpass("Please enter account password: "))
+
+        try:
+            s.login(str(sys.argv[1]), password)
+        except smtplib.SMTPAuthenticationError:
+            print("Wrong password. Please try again.")
+            num_tries -= 1
+        else:
+            break
 
     # create list for single or multiple recipient accounts
     recipient_list = sys.argv[2].split(" ")
