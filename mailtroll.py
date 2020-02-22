@@ -14,7 +14,7 @@ if __name__ == '__main__':
         # print("sys.argv[%d]" % i, j)
 
     # check to see that there are argument flags
-    if len(sys.argv) != 4:
+    if len(sys.argv) < 4:
         print("Error: no or missing flags\nexit(-1)")
         exit(-1)
 
@@ -24,30 +24,44 @@ if __name__ == '__main__':
     s.starttls()
 
     # login authentication
+    password = " "
     num_tries = 3
     while True:
-        if num_tries == 0:
-            print("Wrong Password. Exiting now\nexit(-1)")
-            exit(-1)
-
         # obtain password: hide keylog
         password = str(getpass("Please enter account password: "))
 
         try:
             s.login(str(sys.argv[1]), password)
         except smtplib.SMTPAuthenticationError:
-            print("Wrong password. Please try again.")
-            num_tries -= 1
+            if num_tries == 0:
+                print("Wrong Password. Exiting now\nexit(-1)")
+                exit(-1)
+            else:
+                print("Wrong password. Please try again.")
+                num_tries -= 1
         else:
             break
 
     # create list for single or multiple recipient accounts
     recipient_list = sys.argv[2].split(" ")
 
-    # message to send
-    msg_head = str(input("Message Header: "))
-    msg_text = str(input("Input message: "))
-    message = 'Subject: {}\n\n{}'.format(msg_head, msg_text)
+    # send contents of a text file
+    if len(sys.argv) == 5:
+        msg_file = open(str(sys.argv[4]), "r")
+        msg_head = str(msg_file.readline())
+        print(msg_head)        
+        msg_arr = []
+
+        for line in msg_file:
+            msg_arr.append(line + '\n')
+    
+        msg_text = "".join([str(line) for line in msg_arr])
+        message = 'Subject: {}\n\n{}'.format(msg_head, msg_text)
+
+    else: # send a message
+        msg_head = str(input("Message Header: "))
+        msg_text = str(input("Input message: "))
+        message = 'Subject: {}\n\n{}'.format(msg_head, msg_text)
 
     # loop send the mail to all recipients
     send_message = message # initial
